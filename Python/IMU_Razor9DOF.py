@@ -17,7 +17,7 @@ from time import time
 grad2rad = 3.141592/180.0
 
 # Check your COM port and baud rate
-ser = serial.Serial(port='COM3',baudrate=115200, timeout=1)
+ser = serial.Serial(port='COM5',baudrate=250000, timeout=1)
 
 # Main scene
 scene=display(title="9DOF Razor IMU test")
@@ -85,6 +85,7 @@ while 1:
     line = ser.readline()
     line = line.replace("!ANG:","")   # Delete "!ANG:"
     print line
+    #print ser.readline()
     f.write(line)                     # Write to the output log file
     words = string.split(line,",")    # Fields split
     if len(words) > 2:
