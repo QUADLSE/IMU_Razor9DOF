@@ -1,10 +1,11 @@
+#define MAX_PRINTING_FMT 2
+#define MAX_PRINTING_MODE 2
 unsigned int yawDeg=0;
 unsigned int pitchDeg=0;
 unsigned int rollDeg=0;
 unsigned int omegazero=0;
 unsigned int omegaone=0;
 unsigned int omegatwo=0;
-
 
 long convert_to_dec(float x)
 {
@@ -35,15 +36,17 @@ void print_analog_ASCII(void){
 }
 
 void print_angles_ASCII(void){
+      Serial.print("!");
       Serial.print("ANG:");
       Serial.print(ToDeg(roll));
       Serial.print(",");
       Serial.print(ToDeg(pitch));
       Serial.print(",");
       Serial.print(ToDeg(yaw));
+      Serial.println();
 }
 
-void Print_Binary_Data(void){
+void print_angles_binary(void){
   
   Serial.write(0xFF);  
   yawDeg = (unsigned int)((ToDeg(yaw)*100)+20000);
@@ -66,9 +69,12 @@ void Print_Binary_Data(void){
   Serial.write(0xF1);
 }
 
-void printdata(void)
+void (*print_data_wrapper[MAX_PRINTING_FMT][MAX_PRINTING_MODE])(void)={{print_angles_ASCII,print_analog_ASCII},
+                                                                       {print_angles_binary,print_angles_binary}};
+
+void print_data(uint8_t printing_fmt,uint8_t printing_mode)
 {   
-    print_angles_ASCII();
-    print_analog_ASCII();
-      
+    (*print_data_wrapper[printing_fmt][printing_mode])();  
+    //print_angles_ASCII();
+    //print_analog_ASCII();   
 }

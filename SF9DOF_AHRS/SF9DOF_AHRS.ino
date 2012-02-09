@@ -58,7 +58,7 @@
 #define Kp_YAW 1.2
 #define Ki_YAW 0.00002
 
-#define BAUDRATE 250000
+#define BAUDRATE 57600
 
 /*For debugging purposes*/
 //OUTPUTMODE=1 will print the corrected data, 
@@ -137,6 +137,8 @@ volatile uint8_t analog_reference;
 volatile uint16_t analog_buffer[8];
 volatile uint8_t analog_count[8];
 
+int config_param[3]={0,0,0};
+
 void setup()
 { 
   Serial.begin(BAUDRATE);
@@ -180,7 +182,16 @@ void setup()
   
   delay(2000);
   digitalWrite(STATUS_LED,HIGH);
-    
+   
+  while(external_config()==false){
+    digitalWrite(STATUS_LED,HIGH);
+    delay(500);
+    digitalWrite(STATUS_LED,LOW);
+    delay(500);
+  }
+  
+  digitalWrite(STATUS_LED,HIGH);
+  
   Read_adc_raw();     // ADC initialization
   timer=millis();
   delay(20);
@@ -190,7 +201,7 @@ void setup()
 void loop() //Main Loop
 {
     long timer_loop;
-    
+    uint8_t incoming_byte;
     timer_loop=millis();
     counter++;
     timer_old = timer;
@@ -219,8 +230,14 @@ void loop() //Main Loop
     Euler_angles();
     // ***
    
-    //printdata();
-    Print_Binary_Data();
+    if(config_param[0]==1){
+      //TODO
+    }  
+    else{
+      if((incoming_byte=Serial.read())!=0xFF){
+        print_data(config_param[2],config_param[1]);
+        }
+    }
     
     //FOR DEBUGGING PURPOSES
     //timer_loop=millis()-timer_loop;
