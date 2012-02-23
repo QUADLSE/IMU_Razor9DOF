@@ -39,7 +39,7 @@
 // ADXL345 Sensitivity(from datasheet) => 4mg/LSB   1G => 1000mg/4mg = 256 steps
 // Tested value : 248
 #define GRAVITY 248  //this equivalent to 1G in the raw data coming from the accelerometer 
-#define Accel_Scale(x) x*(GRAVITY/9.81)//Scaling the raw data of the accel to actual acceleration in meters for seconds square
+#define Accel_Scale(x) x*(9.81/GRAVITY)//Scaling the raw data of the accel to actual acceleration in meters for seconds square
 
 #define ToRad(x) (x*0.01745329252)  // *pi/180
 #define ToDeg(x) (x*57.2957795131)  // *180/pi
@@ -153,8 +153,7 @@ void setup()
   Serial.println("Sparkfun 9DOF Razor AHRS");
 
   digitalWrite(STATUS_LED,LOW);
-  delay(1500);
- 
+  
   // Magnetometer initialization
   Compass_Init();
   
@@ -176,13 +175,9 @@ void setup()
     
   AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
   
-  //Serial.println("Offset:");
-  for(int y=0; y<6; y++)
-    Serial.println(AN_OFFSET[y]);
+  //for(int y=0; y<6; y++)
+  //  Serial.println(AN_OFFSET[y]);
   
-  delay(2000);
-  digitalWrite(STATUS_LED,HIGH);
-   
   while(external_config()==false){
     digitalWrite(STATUS_LED,HIGH);
     delay(500);
