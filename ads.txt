@@ -1,0 +1,44 @@
+ External Config
+
+#ifndef External_Config_h
+#define External_Config_h
+
+#include Arduino.h
+
+typedef struct{
+
+uint8_t output_mode;
+uint8_t printing_mode;
+uint8_t printing_fmt;
+
+} ext_config_t;
+
+
+
+boolean external_config(ext_config_t ext_config){
+  Serial.begin(56700);
+  uint8_t read_var;
+  boolean config =false;
+  
+  if(Serial.available()0){
+    Serial.println(HOLA);
+    while(Serial.available()0)
+    {
+      
+      if((read_var=Serial.read())==0xFF){
+        ext_config-output_mode=Serial.read();
+        ext_config-printing_mode=Serial.read();
+        ext_config-printing_fmt=Serial.read();
+        TODO VALIDAR VALIDAR VALIDAR
+        if((read_var=Serial.read())==0xF1){
+          config = true;
+          TODO MANDAR ACK
+        }
+      }
+    }
+  }
+  Serial.end();
+  return config;
+}
+
+#endif
