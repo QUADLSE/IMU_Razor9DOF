@@ -36,5 +36,34 @@ void Vector_Add(float vectorOut[3],float vectorIn1[3], float vectorIn2[3])
   }
 }
 
+void Vector_zero_float(float vector[], uint8_t size){
+  uint8_t i;
+  
+  for(i=0;i<size;i++){
+  vector[i]=0;
+  }
+}
 
+void Vector_zero_int(int vector[], uint8_t size){
+  uint8_t i;
+  
+  for(i=0;i<size;i++){
+  vector[i]=0;
+  }
+}
 
+void Vector_zero_uint8(uint8_t vector[], uint8_t size){
+  uint8_t i;
+  
+  for(i=0;i<size;i++){
+  vector[i]=0;
+  }
+}
+
+void Vector_zero_uint16(uint16_t vector[], uint8_t size){
+  uint8_t i;
+  
+  for(i=0;i<size;i++){
+  vector[i]=0;
+  }
+}

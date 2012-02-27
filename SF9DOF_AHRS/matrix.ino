@@ -19,4 +19,27 @@ void Matrix_Multiply(float a[3][3], float b[3][3],float mat[3][3])
   }
 }
 
+void Matrix_Identity(float mat[3][3]){
+  int i=0;
+  int j=0;
+  
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+      if(i==j)
+        mat[i][j]=1;
+      else
+        mat[i][j]=0;
+    }
+}
+}
 
+void Matrix_Zero(float mat[3][3]){
+  int i=0;
+  int j=0;
+  
+  for(i=0;i<3;i++){
+    for(j=0;j<3;j++){
+    mat[i][j]=0;
+    }
+}
+}

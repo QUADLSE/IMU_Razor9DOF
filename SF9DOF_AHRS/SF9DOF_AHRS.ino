@@ -58,7 +58,7 @@
 #define Kp_YAW 1.2
 #define Ki_YAW 0.00002
 
-#define BAUDRATE 57600
+#define BAUDRATE 250000
 
 /*For debugging purposes*/
 //OUTPUTMODE=1 will print the corrected data, 
@@ -72,6 +72,10 @@
 
 #define ADC_WARM_CYCLES 50
 #define STATUS_LED 13 
+
+#define FOOTER 0xF1
+#define HEADER 0xFF
+#define ACK 0xAA
 
 int8_t sensors[3] = {1,2,0};  // Map the ADC channels gyro_x, gyro_y, gyro_z
 int SENSOR_SIGN[9] = {-1,1,-1,1,1,1,-1,-1,-1};  //Correct directions x,y,z - gyros, accels, magnetormeter
@@ -137,7 +141,7 @@ volatile uint8_t analog_reference;
 volatile uint16_t analog_buffer[8];
 volatile uint8_t analog_count[8];
 
-int config_param[3]={0,0,0};
+int config_param[3]={0,1,0};
 
 void setup()
 { 
@@ -149,8 +153,6 @@ void setup()
   I2C_Init();
   Accel_Init();
   Read_Accel();
-
-  Serial.println("Sparkfun 9DOF Razor AHRS");
 
   digitalWrite(STATUS_LED,LOW);
   
@@ -178,13 +180,6 @@ void setup()
   //for(int y=0; y<6; y++)
   //  Serial.println(AN_OFFSET[y]);
   
-  while(external_config()==false){
-    digitalWrite(STATUS_LED,HIGH);
-    delay(500);
-    digitalWrite(STATUS_LED,LOW);
-    delay(500);
-  }
-  
   digitalWrite(STATUS_LED,HIGH);
   
   Read_adc_raw();     // ADC initialization
@@ -195,9 +190,7 @@ void setup()
 
 void loop() //Main Loop
 {
-    long timer_loop;
     uint8_t incoming_byte;
-    timer_loop=millis();
     counter++;
     timer_old = timer;
     timer=millis();
@@ -226,36 +219,31 @@ void loop() //Main Loop
     // ***
    
     if(config_param[0]==1){
-      //TODO
+      //TODO MANDAR LA INFORMACION DE FORMA CONTINUA
     }  
     else{
       if((incoming_byte=Serial.read())!=0xFF){
-        print_data(config_param[2],config_param[1]);
+        //TODO: VALIDAR
+        process_cmd(incoming_byte);
         }
     }
-    
-    //FOR DEBUGGING PURPOSES
-    //timer_loop=millis()-timer_loop;
-    //unsigned int timer_l=(unsigned int)timer_loop;
-    //Serial.write((uint8_t *) &timer_l ,2);
-    //Serial.write(0xF1); 
-    
-    //Turn off the LED when you saturate any of the gyros.
-    if((abs(Gyro_Vector[0])>=ToRad(300))||(abs(Gyro_Vector[1])>=ToRad(300))||(abs(Gyro_Vector[2])>=ToRad(300)))
-      {
-      if (gyro_sat<50)
-        gyro_sat+=10;
-      }
-    else
-      {
-      if (gyro_sat>0)
-        gyro_sat--;
-      }
-  
-    if (gyro_sat>0)
-      digitalWrite(STATUS_LED,LOW);  
-    else
-      digitalWrite(STATUS_LED,HIGH);  
+        
+//    //Turn off the LED when you saturate any of the gyros.
+//    if((abs(Gyro_Vector[0])>=ToRad(300))||(abs(Gyro_Vector[1])>=ToRad(300))||(abs(Gyro_Vector[2])>=ToRad(300)))
+//      {
+//      if (gyro_sat<50)
+//        gyro_sat+=10;
+//      }
+//    else
+//      {
+//      if (gyro_sat>0)
+//        gyro_sat--;
+//      }
+//  
+//    if (gyro_sat>0)
+//      digitalWrite(STATUS_LED,LOW);  
+//    else
+//      digitalWrite(STATUS_LED,HIGH);  
   
     
 }

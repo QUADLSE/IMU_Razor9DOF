@@ -18,7 +18,7 @@ from time import time
 grad2rad = 3.141592/180.0
 
 # Check your COM port and baud rate
-ser = serial.Serial(port='COM5',baudrate=56700, timeout=None)
+ser = serial.Serial(port='COM2',baudrate=57600, timeout=None)
 
 # Main scene
 scene=display(title="9DOF Razor IMU test")

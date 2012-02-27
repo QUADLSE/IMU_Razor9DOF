@@ -48,7 +48,7 @@ void print_angles_ASCII(void){
 
 void print_angles_binary(void){
   
-  Serial.write(0xFF);  
+  Serial.write(HEADER);  
   yawDeg = (unsigned int)((ToDeg(yaw)*100)+20000);
   pitchDeg = (unsigned int)((ToDeg(pitch)*100)+20000);
   rollDeg = (unsigned int)((ToDeg(roll)*(-1)*100)+20000);
@@ -66,15 +66,13 @@ void print_angles_binary(void){
   //Serial.write((uint8_t *) &accel_x,2);
   //Serial.write((uint8_t *) &accel_y,2);
   //Serial.write((uint8_t *) &accel_z,2);
-  Serial.write(0xF1);
+  Serial.write(FOOTER);
 }
 
 void (*print_data_wrapper[MAX_PRINTING_FMT][MAX_PRINTING_MODE])(void)={{print_angles_ASCII,print_analog_ASCII},
                                                                        {print_angles_binary,print_angles_binary}};
 
-void print_data(uint8_t printing_fmt,uint8_t printing_mode)
+void print_data(void)
 {   
-    (*print_data_wrapper[printing_fmt][printing_mode])();  
-    //print_angles_ASCII();
-    //print_analog_ASCII();   
+    (*print_data_wrapper[config_param[1]][config_param[2]])(); 
 }
