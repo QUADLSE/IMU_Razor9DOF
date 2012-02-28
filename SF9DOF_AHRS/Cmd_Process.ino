@@ -9,11 +9,15 @@ void process_cmd(uint8_t cmd){
 void external_config(void){
   
   int read_var;
-  boolean config =false;
-  digitalWrite(STATUS_LED,HIGH);
-  delay(500);
+  boolean config;
+  config=false;
   digitalWrite(STATUS_LED,LOW);
-  delay(500);
+  delay(1000);
+  digitalWrite(STATUS_LED,HIGH);
+  delay(1000);
+  digitalWrite(STATUS_LED,LOW);
+  delay(1000);
+  digitalWrite(STATUS_LED,HIGH);
   while(config==false){
     if(Serial.available()>4){
     
@@ -30,16 +34,21 @@ void external_config(void){
     }
   
   }
- timer=millis();
+ digitalWrite(STATUS_LED,HIGH);
  counter=0;
+ timer=millis();
 }
 
 void reset(void){
   
   digitalWrite(STATUS_LED,HIGH);
-  delay(500);
+  delay(100);
   digitalWrite(STATUS_LED,LOW);
-  delay(500);
+  delay(100);
+  digitalWrite(STATUS_LED,HIGH);
+  delay(100);
+  digitalWrite(STATUS_LED,LOW);
+  
   timer=0;   //general purpuse timer
   timer_old=0;
   timer24=0;
@@ -112,10 +121,9 @@ void reset(void){
     
   AN_OFFSET[5]-=GRAVITY*SENSOR_SIGN[5];
  
-  digitalWrite(STATUS_LED,HIGH);
-  
   Read_adc_raw();     // ADC initialization
-  timer=millis();
+  
   counter=0;
-  Serial.write(ACK); 
+  reset_count=RESET_COUNT;
+  timer=millis(); 
 }

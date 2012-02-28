@@ -58,7 +58,7 @@
 #define Kp_YAW 1.2
 #define Ki_YAW 0.00002
 
-#define BAUDRATE 250000
+#define BAUDRATE 57600
 
 /*For debugging purposes*/
 //OUTPUTMODE=1 will print the corrected data, 
@@ -76,6 +76,8 @@
 #define FOOTER 0xF1
 #define HEADER 0xFF
 #define ACK 0xAA
+
+#define RESET_COUNT 700
 
 int8_t sensors[3] = {1,2,0};  // Map the ADC channels gyro_x, gyro_y, gyro_z
 int SENSOR_SIGN[9] = {-1,1,-1,1,1,1,-1,-1,-1};  //Correct directions x,y,z - gyros, accels, magnetormeter
@@ -134,6 +136,8 @@ float Temporary_Matrix[3][3]={
   ,{
     0,0,0  }
 };
+//Reset counter
+uint16_t reset_count=0;
  
 //ADC variables
 volatile uint8_t MuxSel=0;
@@ -217,17 +221,24 @@ void loop() //Main Loop
     Drift_correction();
     Euler_angles();
     // ***
-   
-    if(config_param[0]==1){
-      //TODO MANDAR LA INFORMACION DE FORMA CONTINUA
-    }  
-    else{
-      if((incoming_byte=Serial.read())!=0xFF){
-        //TODO: VALIDAR
-        process_cmd(incoming_byte);
-        }
+    if(reset_count>0){
+      reset_count--;
+      if(reset_count==0){
+        digitalWrite(STATUS_LED,HIGH);
+        Serial.write(ACK);
+      }
     }
-        
+    else{
+      if(config_param[0]==1){
+        //TODO MANDAR LA INFORMACION DE FORMA CONTINUA
+      }  
+      else{
+        if((incoming_byte=Serial.read())!=0xFF){
+          //TODO: VALIDAR
+          process_cmd(incoming_byte);
+          }
+      }
+    }   
 //    //Turn off the LED when you saturate any of the gyros.
 //    if((abs(Gyro_Vector[0])>=ToRad(300))||(abs(Gyro_Vector[1])>=ToRad(300))||(abs(Gyro_Vector[2])>=ToRad(300)))
 //      {
